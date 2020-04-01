@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
-import { usersReducer } from './usersReducer.js'
+import { usersReducer, departmentReducer, dataReducer, loginReducer } from './usersReducer.js'
+import { publicationsReducer } from './publicationsReducer'
 
 const initialState = {
     mood: ""
@@ -27,5 +28,9 @@ const reducer = (state = initialState, action) => {
 
 export const rootReducer = combineReducers({
     joke: reducer,
-    users: usersReducer
+    users: usersReducer,
+    departments: departmentReducer,
+    loaded: dataReducer,
+    login: loginReducer,
+    publications: publicationsReducer
 })

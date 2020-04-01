@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import Header from '../Components/Header/Header'
+import Create from '../Components/Create/Create'
 
 
 
@@ -12,5 +12,4 @@ const mapStateToProps = state => ({
 // const mapDispatchToProps = dispatch => ({
 // })
 
-export default connect(mapStateToProps)(Header)
-// export default connect(mapStateToProps)(Users)
+export default connect(mapStateToProps)(Create)

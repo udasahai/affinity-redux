@@ -1,0 +1,17 @@
+#search {
+
+  z-index: 999;
+  width: 100%;
+  background-color: green1
+}
+
+
+#result {
+  position: fixed;
+  top: 110px;
+  /* same height as navbar */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+}

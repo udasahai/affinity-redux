@@ -11,7 +11,8 @@ const mapStateToProps = state => {
   //console.log(state.users)
   return ({
     mood: state.joke.mood,
-    users: state.users.items
+    user_data: state.users,
+    loaded: state.loaded
 
   })
 }
@@ -26,4 +27,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Users)
-// export default connect(mapStateToProps)(Users)
+// export default connect(mapStateToProps)(Users)1v
