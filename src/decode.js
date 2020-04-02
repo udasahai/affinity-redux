@@ -85,7 +85,7 @@ let publicationParse = (pub) => {
 let MapToString = (map) => {
     let string = ""
     for (var key in map) {
-        string += `( ${key} : ${map[key]} ) `
+        string += `[ ${key} : ${map[key]} ] `
     }
 
     return string;

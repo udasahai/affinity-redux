@@ -3,6 +3,8 @@ import "./Create.css"
 import { Form, Button, Badge } from 'react-bootstrap';
 import { Route, Redirect } from 'react-router'
 import ImageUploader from 'react-images-upload';
+import { updateUser, clearUserUpdate } from '../../Actions/userActions'
+
 
 class Create extends React.Component {
 
@@ -30,6 +32,7 @@ class Create extends React.Component {
         this.handleLastNameChange = this.handleLastNameChange.bind(this);
         this.handleEmailChange = this.handleEmailChange.bind(this);
         this.onDrop = this.onDrop.bind(this);
+        // this.handleSubmit = this.handleSubmit.bind(this)
 
 
 
@@ -102,6 +105,13 @@ class Create extends React.Component {
     }
 
 
+    // handleSubmit(event) {
+    //     this.props.dispatch(updateUser({
+    //         firstName:
+    //     }))
+    // }
+
+
     componentDidMount() {
 
         console.log(this.props)
@@ -124,6 +134,8 @@ class Create extends React.Component {
 
         // console.log(this.props.contact)
         console.log("Mounting")
+
+        // this.props.dispatch(clearUserUpdate())
 
         this.setState({
             contact: this.props.contact,

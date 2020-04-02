@@ -80,6 +80,7 @@ class Profile extends React.Component {
         const userID = this.props.match.params.userID;
         //console.log(fetchPublications(userID))
         this.props.dispatch(fetchPublications(userID));
+        // this.props.dispatch(clearUserUpdate())
         this.setState({ "userInfo": userInfo });
     }
 
@@ -176,18 +177,19 @@ const Publication = (publication, i) => {
     const pub = publicationParse(publication);
     // console.log(pub)
     return (
-        <Card bg="white" text='black' border="dark">
+        <Card key={i} bg="white" text='black' border="dark">
                 <Card.Header>
                   <Accordion.Toggle as={Card.Header} eventKey={i}>
-                    {publication.paperDisplay}
+
+                    <b> {publication.paperDisplay} <span id='arrow'>▼</span> </b>
                   </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey={i}>
                   <Card.Body>
                       <ListGroup variant="flush">
-                        <ListGroup.Item>Authors: {pub.authors}</ListGroup.Item>
-                        <ListGroup.Item>Fields: {pub.fields}</ListGroup.Item>
-                        <ListGroup.Item> <ShowModal source={pub['source']}/> </ListGroup.Item>
+                        <ListGroup.Item className='capitalize'><b> Authors: </b> {pub.authors}</ListGroup.Item>
+                        <ListGroup.Item className='capitalize'><b> Fields: </b> {pub.fields}</ListGroup.Item>
+                        <ListGroup.Item className='capitalize'> <ShowModal source={pub['source']}/> </ListGroup.Item>
                       </ListGroup>
                   </Card.Body>
                 </Accordion.Collapse>

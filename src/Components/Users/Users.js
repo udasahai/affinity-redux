@@ -3,17 +3,25 @@ import React from 'react'
 import "./Users.css"
 import { CardColumns, Card } from 'react-bootstrap'
 import Tile from '../Tile/Tile'
+import Select from '../Select/Select'
+import debounce from 'lodash/debounce'
 
 
 
 
 
 class Users extends React.Component {
-    // constructor(props) {
-    //     super(props)
-    // }
+
+    constructor(props) {
+        super(props)
+        this.selectCallback = this.selectCallback.bind(this)
+        this.onChangeResearch = this.onChangeResearch.bind(this)
+        this.onChangeName = this.onChangeName.bind(this)
+    }
 
     componentDidMount() {
+
+        this.props.clearFilter();
 
         if (!this.props.loaded)
             this.props.getUsers();
@@ -76,20 +84,91 @@ class Users extends React.Component {
         ))
     }
 
+    onChangeResearch = (event) => {
+        /* signal to React not to nullify the event object */
+        event.persist();
+
+        if (!this.debouncedResearch) {
+            this.debouncedResearch = debounce(() => {
+                this.props.setUsersFilter({
+                    ...this.props.filter,
+                    research: event.target.value
+                })
+            }, 300);
+        }
+        this.debouncedResearch();
+    }
+
+    onChangeName = (event) => {
+        /* signal to React not to nullify the event object */
+        event.persist();
+
+        if (!this.debouncedName) {
+            this.debouncedName = debounce(() => {
+                this.props.setUsersFilter({
+                    ...this.props.filter,
+                    name: event.target.value
+                })
+            }, 300);
+        }
+        this.debouncedName();
+    }
+
+
+
+    selectCallback(val) {
+        this.props.setUsersFilter({
+            ...this.props.filter,
+            departmentID: val
+        })
+    }
+
+
+    selectPredicate(val) {
+        return {
+            val: val.departmentID,
+            display: val.name
+        }
+    }
+
 
     render() {
 
         //console.log(this.props.users)
 
-        this.props.onRender();
+        // this.props.onRender();
+        const departments = [...this.props.departments];
+        departments.unshift({
+            departmentID: 0,
+            name: "All"
+        })
 
         return (
-            <div>
+            <div id='body'>
 
-                <div id="search">
-                    <h1> Hello Baby!!! </h1> <
-                    h1 > { this.props.mood } < /h1>
+                <div id="department">
+                   Departments: <Select source={departments} predicate={this.selectPredicate} callback={this.selectCallback} />
                 </div>
+
+                <div id='search'>
+                    Name: <br></br><input type='text' onChange={this.onChangeName} placeholder='Search for a User...'></input>
+                </div>
+
+                <div id='research'>
+                    Research:<br></br>
+        			<input list="interests" onChange={this.onChangeResearch}/>
+        			<datalist id="interests">
+
+        			    {
+        			    	this.props.research.map((item,i) =>
+        			      <option key={i} value={item.keyword} />
+        			    )}
+
+        			</datalist>
+                </div>
+
+                <br className='clear'></br>
+
 
                 <div id="result">
                     {

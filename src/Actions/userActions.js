@@ -2,17 +2,58 @@ export const FETCH_USERS_BEGIN = 'FETCH_USERS_BEGIN';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 export const FETCH_USERS_FAILURE = 'FETCH_USERS_FAILURE';
 
+export const UPDATE_USER_BEGIN = 'UPDATE_USER_BEGIN';
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
+export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE';
+export const CLEAR_USER_UPDATE = 'CLEAR_USER_UPDATE'
+
+export const SET_USERS_FILTER = 'SET_USERS_FILTER';
+export const CLEAR_FILTER = 'CLEAR_FILTER';
+
 export const FETCH_DEPARTMENT_BEGIN = 'FETCH_DEPARTMENT_BEGIN';
 export const FETCH_DEPARTMENT_SUCCESS = 'FETCH_DEPARTMENT_SUCCESS';
 export const FETCH_DEPARTMENT_FAILURE = 'FETCH_DEPARTMENT_FAILURE';
+
 export const DATA_LOADED = "DATA_LOADED";
+
 export const FETCH_TARGETID_BEGIN = 'FETCH_TARGETID_BEGIN';
 export const FETCH_TARGETID_SUCCESS = 'FETCH_TARGETID_SUCCESS';
 export const FETCH_TARGETID_FAILURE = 'FETCH_TARGETID_FAILURE';
 
+
+export const FETCH_RESEARCH_BEGIN = 'FETCH_RESEARCH_BEGIN'
+export const FETCH_RESEARCH_SUCCESS = 'FETCH_RESEARCH_SUCCESS'
+export const FETCH_RESEARCH_FAILURE = 'FETCH_RESEARCH_FAILURE'
+
+
+
+
 export const fetchUsersBegin = () => ({
   type: FETCH_USERS_BEGIN
 });
+
+export const updateUserBegin = () => ({
+  type: UPDATE_USER_BEGIN
+})
+
+export const updateUserSuccess = () => ({
+  type: UPDATE_USER_SUCCESS,
+  payload: { status: 'ok' }
+})
+
+export const updateUserFailure = e => ({
+  type: UPDATE_USER_FAILURE,
+  payload: {
+    status: 'fail',
+    error: e
+  }
+})
+
+
+export const clearUserUpdate = () => ({
+  type: CLEAR_USER_UPDATE
+})
+
 
 export const fetchUsersSuccess = users => ({
   type: FETCH_USERS_SUCCESS,
@@ -23,6 +64,15 @@ export const fetchUsersFailure = error => ({
   type: FETCH_USERS_FAILURE,
   payload: { error }
 });
+
+export const setUsersFilter = filter => ({
+  type: SET_USERS_FILTER,
+  payload: { filter }
+})
+
+export const clearFilter = () => ({
+  type: CLEAR_FILTER
+})
 
 export const fetchDepartmentBegin = () => ({
   type: FETCH_DEPARTMENT_BEGIN
@@ -38,6 +88,20 @@ export const fetchDepartmentFailure = error => ({
   payload: { error }
 });
 
+export const fetchResearchBegin = () => ({
+  type: FETCH_RESEARCH_BEGIN
+});
+
+export const fetchResearchSuccess = research => ({
+  type: FETCH_RESEARCH_SUCCESS,
+  payload: { research }
+});
+
+export const fetchResearchFailure = error => ({
+  type: FETCH_RESEARCH_FAILURE,
+  payload: { error }
+});
+
 export const dataLoaded = () => ({
   type: DATA_LOADED
 });
@@ -49,7 +113,7 @@ export const fetchTargetIDBegin = () => ({
 export const fetchTargetIDSuccessLoginSuccess = user => ({
   type: FETCH_TARGETID_SUCCESS,
   payload: {
-    user: user ,
+    user: user,
     loggedIn: true,
     redirect: true
   }
@@ -72,6 +136,30 @@ export const fetchTargetIDFailure = error => ({
 
 
 
+export const updateUser = args => {
+  return dispatch => {
+    dispatch(updateUserBegin());
+
+    postData('/user/update', JSON.stringify(args))
+      .then(data => dispatch(updateUserSuccess()))
+      .catch(error => dispatch(updateUserFailure(error)))
+  }
+}
+
+const postData = async(endpoint, body) => {
+  let result = await fetch(endpoint, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: body
+  })
+  handleErrors(result);
+  let data = await result.json();
+  return data;
+}
+
 
 
 
@@ -80,15 +168,6 @@ export const fetchData = async(endpoint) => {
   let result = await fetch(endpoint);
   handleErrors(result);
   let data = await result.json();
-
-  // console.log(data);
-  // console.log(endpoint)
-  // ////console.log("meow")
-
-  // if (data.status !== "ok")
-  //   throw Error(data)
-
-  // ////console.log("returning data")
   return data;
 }
 
@@ -99,6 +178,7 @@ export function fetchUsers() {
   return dispatch => {
     dispatch(fetchUsersBegin());
     dispatch(fetchDepartmentBegin());
+    dispatch(fetchResearchBegin());
 
     // // ////console.log("Desputched")
     // return fetch("/user")
@@ -111,6 +191,9 @@ export function fetchUsers() {
     //     dispatch(fetchUsersSuccess(json.rows));
     //     return json.rows;
     //   })
+    fetchData('/research_interest').then(data => dispatch(fetchResearchSuccess(data.rows)))
+      .catch(error => dispatch(fetchResearchFailure(error)));
+
     fetchData('/user').then(data => dispatch(fetchUsersSuccess(data.rows)))
       .catch(error => dispatch(fetchUsersFailure(error)));
 

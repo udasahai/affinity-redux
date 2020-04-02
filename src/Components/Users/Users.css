@@ -1,17 +1,41 @@
-#search {
+#department {
 
   z-index: 999;
-  width: 100%;
-  background-color: green1
+  /*width: 100%;*/
+  padding-top: 55px;
+  float: left;
+  /*background-color: blue;*/
+}
+
+
+#search {
+  z-index: 999;
+  /*width: 100%;*/
+  padding-left: 20px;
+  padding-top: 55px;
+  float: left
+}
+
+#research {
+    z-index: 999;
+  /*width: 100%;*/
+  float: left;
+  padding-left: 20px;
+  padding-top: 55px;
+}
+
+.clear {
+  clear: both;
 }
 
 
 #result {
   position: fixed;
-  top: 110px;
+  top: 115px;
   /* same height as navbar */
   left: 0;
   right: 0;
   bottom: 0;
   overflow-y: scroll;
 }
+

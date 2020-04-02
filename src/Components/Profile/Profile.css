@@ -21,9 +21,16 @@
     margin-bottom: 10px
   }
 
+  #point {
+    cursor: pointer
+  }
+
   /*#modal {*/
+
   /*  height: 90%;*/
+
   /*  width: 90%;*/
+
   /*}*/
 
   #imgContainer {
@@ -45,6 +52,14 @@
     padding: 7%;
     border-radius: 25px;
 
+  }
+
+  .arrow {
+    text-align: right
+  }
+
+  .capitalize {
+    text-transform: capitalize;
   }
 
   /*.lst{

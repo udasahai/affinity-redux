@@ -1,5 +1,6 @@
 import React from "react"
 import { Modal, Button, ButtonGroup, ListGroup } from 'react-bootstrap'
+import Select from '../Select/Select'
 
 
 class MyVerticallyCenteredModal extends React.Component {
@@ -19,6 +20,13 @@ class MyVerticallyCenteredModal extends React.Component {
     })
   }
 
+  predicate(val) {
+    return {
+      val: val,
+      display: val
+    }
+  }
+
   render() {
     const link = this.state.link
     return (
@@ -35,7 +43,7 @@ class MyVerticallyCenteredModal extends React.Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <Select callback={this.callback} source={this.props['source']} />
+            Sources: <Select callback={this.callback} predicate={this.predicate} source={this.props['source']} />
             <iframe src={link}  width='1000px' height='600px'></iframe>
         </Modal.Body>
         <Modal.Footer>
@@ -61,8 +69,8 @@ function MyLinksModal(props) {
       </Modal.Header>
       <Modal.Body>
         <ListGroup>
-          {props.source.map( src =>
-            <ListGroup.Item action target="_blank" rel="noopener noreferrer" href={src}>
+          {props.source.map( (src,i) =>
+            <ListGroup.Item key={i} action target="_blank" rel="noopener noreferrer" href={src}>
               {src}
             </ListGroup.Item>
           )}
@@ -109,38 +117,5 @@ function ShowModal(props) {
   );
 }
 
-
-class Select extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { value: '' };
-
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-    this.props.callback(event.target.value);
-  }
-
-
-  render() {
-    // console.log(this.props.source)
-    return (
-      <form>
-        <label>
-          Sources:
-          <select value={this.state.value} onChange={this.handleChange}>
-
-            {
-              this.props.source.map(val => <option value={val}> {val} </option>)
-            }
-
-          </select>
-        </label>
-      </form>
-    );
-  }
-}
 
 export default ShowModal;

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { usersReducer, departmentReducer, dataReducer, loginReducer } from './usersReducer.js'
+import { usersReducer, departmentReducer, dataReducer, loginReducer, researchReducer } from './usersReducer.js'
 import { publicationsReducer } from './publicationsReducer'
 
 const initialState = {
@@ -32,5 +32,6 @@ export const rootReducer = combineReducers({
     departments: departmentReducer,
     loaded: dataReducer,
     login: loginReducer,
-    publications: publicationsReducer
+    publications: publicationsReducer,
+    research: researchReducer
 })

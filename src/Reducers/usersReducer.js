@@ -8,7 +8,16 @@ import {
   FETCH_TARGETID_BEGIN,
   FETCH_TARGETID_SUCCESS,
   FETCH_TARGETID_FAILURE,
-  DATA_LOADED
+  SET_USERS_FILTER,
+  FETCH_RESEARCH_BEGIN,
+  FETCH_RESEARCH_SUCCESS,
+  FETCH_RESEARCH_FAILURE,
+  DATA_LOADED,
+  CLEAR_FILTER,
+  UPDATE_USER_BEGIN,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE,
+  CLEAR_USER_UPDATE
 }
 from '../Actions/userActions';
 
@@ -16,8 +25,16 @@ const initialState_user = {
   items: [],
   loading: true,
   error: null,
-  username: "",
-  loggedIn: false
+  filter: {
+    name: '',
+    departmentID: 0,
+    research: ''
+  },
+  update: {
+    val: [],
+    status: '',
+    error: null
+  }
 };
 
 export function dataReducer(state = false, action) {
@@ -25,6 +42,41 @@ export function dataReducer(state = false, action) {
     return true;
   }
   return state;
+}
+
+let initialState_research = {
+  items: [],
+  loading: true,
+  error: null
+}
+
+export function researchReducer(state = initialState_research, action) {
+  switch (action.type) {
+    case FETCH_RESEARCH_BEGIN:
+      return {
+        ...state,
+        loading: true,
+        error: null
+      }
+
+    case FETCH_RESEARCH_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: action.payload.research
+      }
+
+    case FETCH_RESEARCH_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload.error
+      }
+
+    default:
+      return state;
+
+  }
 }
 
 export function usersReducer(state = initialState_user, action) {
@@ -47,8 +99,6 @@ export function usersReducer(state = initialState_user, action) {
         ...state,
         loading: false,
         items: action.payload.users,
-        username: "Udasahai",
-        loggedIn: true
       };
 
     case FETCH_USERS_FAILURE:
@@ -66,6 +116,39 @@ export function usersReducer(state = initialState_user, action) {
         items: []
       };
 
+    case SET_USERS_FILTER:
+      return {
+        ...state,
+        filter: action.payload.filter
+      }
+
+    case CLEAR_FILTER:
+      return {
+        ...state,
+        filter: { ...initialState_user.filter }
+      }
+
+
+    case UPDATE_USER_BEGIN:
+      return state;
+
+    case UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        user: {
+          status: 'ok'
+        }
+      }
+
+    case UPDATE_USER_FAILURE:
+      return {
+        ...state,
+        user: {
+          status: 'fail',
+          error: action.payload.error
+        }
+      }
+
     default:
       // ALWAYS have a default case in a reducer
       return state;
@@ -74,7 +157,10 @@ export function usersReducer(state = initialState_user, action) {
 
 
 const initialState_department = {
-  items: [],
+  items: [{
+    departmentID: 0,
+    name: 'All'
+  }],
   loading: true,
   error: null,
 };
