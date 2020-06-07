@@ -4,6 +4,7 @@ import { Route, Redirect } from 'react-router'
 import { withRouter } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap'
 import { fetchPublications } from '../../Actions/publicationsActions'
+import SimpleTabs from '../Tabs/Tabs'
 import ShowModal from '../ShowModal/ShowModal'
 import publicationParse from '../../decode'
 import "./Profile.css"
@@ -25,7 +26,6 @@ class Profile extends React.Component {
         }
 
         this.handleClick = this.handleClick.bind(this)
-        this.callApi = this.callApi.bind(this)
         this.redirect = this.redirect.bind(this)
         this.addDefaultSrc = this.addDefaultSrc.bind(this)
     }
@@ -43,35 +43,6 @@ class Profile extends React.Component {
     redirect(event) {
         this.setState({ redirect: true })
     }
-
-    callApi() {
-
-        // 		var self = this;
-        // 		var str = "" ;
-        // 		// var str = 'https://ushare.idre.ucla.edu/ushare/api';
-        // 		var opts = {
-        // 			"userID": self.state.userInfo.userID,
-        // 			"claimedBy": localStorage.getItem("SHIBEDUPERSONTARGETEDID")
-        // 		}
-
-
-        // 		fetch(str + '/users' , {
-        // 			method: 'post',
-        // 			headers: {
-        // 				'Content-Type': 'application/json',
-        // 				// 'Content-Type': 'application/x-www-form-urlencoded',
-        // 			},
-        // 			body: JSON.stringify(opts)
-        // 		  }).then(function(response) {
-        // 			return response.json();
-        // 		  }).then(function(data) {
-        // 			localStorage.setItem("ISCLAIMED", true)
-        // 			self.setState({"claimed": true});
-        // 			alert("Succesfully Claimed")
-        // 		  });
-
-    }
-
 
     componentDidMount() {
         window.scrollTo(0, 0);
@@ -104,45 +75,36 @@ class Profile extends React.Component {
         return (
 
             <div>
-
-			<Container id={"bg-1"} fluid="true">
-			<Row>
-			<Col>
-				<Image onError={this.addDefaultSrc} src={profilePicture} id="imgContainer" thumbnail="true"  />
-
-					<h1> {fullName} </h1>
-					<h5> {email} </h5>
-			</Col>
-
-			<Col>
-				<div>
-
-
-				<ButtonToolbar id="buttons"> { ButtonBar(loggedIn,userID,user) } </ButtonToolbar>
-
-					</div>
-				<div id="jumbo" fluid="true">
-
-
-				  <Container>
-				    <h1 style={{textAlign:"center"}}>Research Interests</h1>
-				<ul>
-					{interests.map((item,i) => <li key={i}> {item} </li>)}
-				</ul>
-				  </Container>
-				</div>
-
-			</Col>
-			</Row>
-			</Container>
-
-			<Container id={"bg-2"} fluid="true">
-				<h1> Recent Publications </h1>
-                {Publications(this.props.publications)}
-
-			</Container>
-
-			</div>
+                <Container className="tabs">
+                    <Row>
+                        <SimpleTabs />
+                    </Row>
+                </Container>
+                <Container id={"bg-1"} fluid="true">
+                    <Row id="buttonBar">
+                        <ButtonToolbar id="buttons" size="sm"> {ButtonBar(loggedIn, userID, user)} </ButtonToolbar>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <Image onError={this.addDefaultSrc} src={profilePicture} id="imgContainer" thumbnail="true" />
+                            <h1> {fullName} </h1>
+                            <h5> {email} </h5>
+                        </Col>
+                        <Col>
+                                <Container id="jumbo" fluid="true">
+                                    <h1 style={{ textAlign: "center" }}>Research Interests</h1>
+                                    <ul>
+                                        {interests.map((item, i) => <li key={i}> {item} </li>)}
+                                    </ul>
+                                </Container>
+                        </Col>
+                    </Row>
+                </Container>
+                <Container id={"bg-2"} fluid="true">
+                    <h1> Recent Publications </h1>
+                    {Publications(this.props.publications)}
+                </Container>
+            </div>
 
         )
     }
@@ -153,9 +115,9 @@ const ButtonBar = (loggedIn, userID, user) => {
     //console.log(loggedIn)
     if (!loggedIn)
         return (
-            <Button variant="primary" size="lg">
-				Claim
-				</Button>
+            <Button variant="primary" >
+                Claim
+            </Button>
         )
 
     //console.log(userID)
@@ -163,10 +125,10 @@ const ButtonBar = (loggedIn, userID, user) => {
     if (userID == user.userID) //cmp userID of loggedin user with current profile
         return (
             <LinkContainer to='/create'>
-                <Button variant="primary" size="lg">
-                 Edit
+                <Button variant="primary">
+                    Edit
     			</Button>
-			</LinkContainer>
+            </LinkContainer>
         )
 
     return null;
@@ -178,22 +140,22 @@ const Publication = (publication, i) => {
     // console.log(pub)
     return (
         <Card key={i} bg="white" text='black' border="dark">
-                <Card.Header>
-                  <Accordion.Toggle as={Card.Header} eventKey={i}>
+            <Card.Header>
+                <Accordion.Toggle as={Card.Header} eventKey={i}>
 
                     <b> {publication.paperDisplay} <span id='arrow'>▼</span> </b>
-                  </Accordion.Toggle>
-                </Card.Header>
-                <Accordion.Collapse eventKey={i}>
-                  <Card.Body>
-                      <ListGroup variant="flush">
+                </Accordion.Toggle>
+            </Card.Header>
+            <Accordion.Collapse eventKey={i}>
+                <Card.Body>
+                    <ListGroup variant="flush">
                         <ListGroup.Item className='capitalize'><b> Authors: </b> {pub.authors}</ListGroup.Item>
                         <ListGroup.Item className='capitalize'><b> Fields: </b> {pub.fields}</ListGroup.Item>
-                        <ListGroup.Item className='capitalize'> <ShowModal source={pub['source']}/> </ListGroup.Item>
-                      </ListGroup>
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
+                        <ListGroup.Item className='capitalize'> <ShowModal source={pub['source']} /> </ListGroup.Item>
+                    </ListGroup>
+                </Card.Body>
+            </Accordion.Collapse>
+        </Card>
     )
 }
 
@@ -202,8 +164,8 @@ const Publications = (publications) => {
 
     return (
         <Accordion>
-            {publications.map((publication,i) => Publication(publication,i) )}
-            </Accordion>
+            {publications.map((publication, i) => Publication(publication, i))}
+        </Accordion>
     )
 }
 

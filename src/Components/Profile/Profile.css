@@ -1,7 +1,28 @@
-  #bg-1 {
+.tabs {
+  /* Green */
+  margin-top: 50px;
+  text-align: center;
+}
+
+#buttonBar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 50px;
+  margin-right: 20px;
+}
+
+#bg-1 {
     background-color: #1abc9c;
     /* Green */
-    padding: 7%;
+    /* display: flex;
+    align-items: center;
+    justify-content: space-evenly; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 20px;
+    /* margin-bottom: 50px; */
     color: #ffffff;
     text-align: center;
     height: auto;
