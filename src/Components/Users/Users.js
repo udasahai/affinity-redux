@@ -1,7 +1,7 @@
 import React from 'react'
 // import store from '../../Store'
 import "./Users.css"
-import { CardColumns, Card } from 'react-bootstrap'
+import { CardColumns, Card, Container, Row, Col } from 'react-bootstrap'
 import Tile from '../Tile/Tile'
 import Select from '../Select/Select'
 import debounce from 'lodash/debounce'
@@ -29,51 +29,8 @@ class Users extends React.Component {
 
     tileComponents() {
 
-        // var value = this.state.value;
-        // var selection = this.state.selections_department;
-        // var selections_research = this.state.selections_research;
         var data = this.props.user_data.items;
 
-
-        // value = value.toLowerCase();
-
-        // console.log("dept : " + selection);
-
-        // if (selections_research.length > 0) {
-        //     data = data.filter(function(tile) {
-        //         return tile.researchInterests.toLowerCase().includes(selections_research.toLowerCase())
-        //     })
-        // }
-
-        // if (value.length >= 3) {
-        //     data = data.filter(function(tile) {
-        //         return (tile.firstName.toLowerCase().includes(value) || tile.lastName.toLowerCase().includes(value))
-        //     })
-        // }
-
-
-        // if (selection > 0) {
-        //     data = data.filter(function(tile) {
-        //         console.log(tile)
-        //         return tile.departmentID == selection
-        //     })
-        // }
-
-        //  console.log(data[0])
-
-        // data = data.map(tile => {
-
-        // 	tile["fullname"] = tile.firstName + " " + tile.lastName
-        // 	// tilel[""]
-        // 	tile["interests"] = tile.researchInterests.split(",")
-        // })
-
-        // for (var i = 0; i < data.length; i++) {
-        //     data[i]["fullname"] = data[i].firstName + " " + data[i].lastName
-        //     data[i]["interests"] = data[i].researchInterests.split(",")
-        // }
-
-        // console.log(data)
 
         return data.map(tile => (
             <Tile key={tile.userID*100 + tile.departmentID}
@@ -145,26 +102,27 @@ class Users extends React.Component {
 
         return (
             <div id='body'>
+                <div className="filter">
+                    <div className="search">
+                        Departments: <Select source={departments} predicate={this.selectPredicate} callback={this.selectCallback} />
+                    </div>
 
-                <div id="department">
-                   Departments: <Select source={departments} predicate={this.selectPredicate} callback={this.selectCallback} />
-                </div>
+                    <div className='search'>
+                        Name: <br></br><input type='text' onChange={this.onChangeName} placeholder='Search for a User...'></input>
+                    </div>
 
-                <div id='search'>
-                    Name: <br></br><input type='text' onChange={this.onChangeName} placeholder='Search for a User...'></input>
-                </div>
+                    <div className='search'>
+                        Research:<br></br>
+                        <input list="interests" onChange={this.onChangeResearch} />
+                        <datalist id="interests">
 
-                <div id='research'>
-                    Research:<br></br>
-        			<input list="interests" onChange={this.onChangeResearch}/>
-        			<datalist id="interests">
+                            {
+                                this.props.research.map((item, i) =>
+                                    <option key={i} value={item.keyword} />
+                                )}
 
-        			    {
-        			    	this.props.research.map((item,i) =>
-        			      <option key={i} value={item.keyword} />
-        			    )}
-
-        			</datalist>
+                        </datalist>
+                    </div>
                 </div>
 
                 <br className='clear'></br>
@@ -173,7 +131,9 @@ class Users extends React.Component {
                 <div id="result">
                     {
                                 this.props.user_data.loading ?
-                                <h1> ...Loading </h1> :
+                                <div>
+                                <br></br> <br></br>
+                                <h1> ...Loading </h1> </div>:
                                 <CardColumns>
                                     {this.tileComponents()}
                                </CardColumns>

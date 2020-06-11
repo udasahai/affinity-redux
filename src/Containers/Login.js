@@ -6,6 +6,7 @@ import { Redirect } from 'react-router'
 
 
 const Login = (props) => {
+    console.log("Starting Login")
     props.dispatch(fetchUserByTargetID())
 
     // if (props.redirect) {

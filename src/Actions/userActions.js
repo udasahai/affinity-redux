@@ -1,3 +1,5 @@
+import {initialState_login} from '../Reducers/usersReducer';
+
 export const FETCH_USERS_BEGIN = 'FETCH_USERS_BEGIN';
 export const FETCH_USERS_SUCCESS = 'FETCH_USERS_SUCCESS';
 export const FETCH_USERS_FAILURE = 'FETCH_USERS_FAILURE';
@@ -24,7 +26,7 @@ export const FETCH_TARGETID_FAILURE = 'FETCH_TARGETID_FAILURE';
 export const FETCH_RESEARCH_BEGIN = 'FETCH_RESEARCH_BEGIN'
 export const FETCH_RESEARCH_SUCCESS = 'FETCH_RESEARCH_SUCCESS'
 export const FETCH_RESEARCH_FAILURE = 'FETCH_RESEARCH_FAILURE'
-
+export const SET_LOGIN_NAME = 'SET_LOGIN_NAME'
 
 
 
@@ -110,6 +112,13 @@ export const fetchTargetIDBegin = () => ({
   type: FETCH_TARGETID_BEGIN
 });
 
+export const setLoginGivenName = (name) => ({
+  type: SET_LOGIN_NAME,
+  payload : {
+    givenName: name
+  }
+})
+
 export const fetchTargetIDSuccessLoginSuccess = user => ({
   type: FETCH_TARGETID_SUCCESS,
   payload: {
@@ -122,7 +131,7 @@ export const fetchTargetIDSuccessLoginSuccess = user => ({
 export const fetchTargetIDSuccessLoginFail = () => ({
   type: FETCH_TARGETID_SUCCESS,
   payload: {
-    user: {},
+    user: initialState_login.user,
     loggedIn: false,
     redirect: true
   }
@@ -205,6 +214,8 @@ export function fetchUsers() {
 
 
 const dispatchLogin = (dispatch, rows) => {
+  // console.log("action");
+  // console.log(rows)
   if (rows.length > 0)
     dispatch(fetchTargetIDSuccessLoginSuccess(rows[0]));
   else
@@ -219,6 +230,7 @@ export function fetchUserByTargetID() {
     fetchData('/login')
       .then(datum => {
         // console.log(datum)
+        dispatch(setLoginGivenName(datum["SHIBGIVENNAME"]))
         return datum['SHIBEDUPERSONTARGETEDID']
       })
       .then(targetID => fetchData('/user/id?id=' + targetID))

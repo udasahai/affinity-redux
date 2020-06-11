@@ -27,30 +27,32 @@ function App() {
     <Login />
     }
       <HeaderHandler />
-      <Switch>
+      <div className="viewport">
+        <Switch>
 
-        <Route exact path="/">
-          <VisibleUsers />
-        </Route>
+          <Route exact path="/">
+            <VisibleUsers />
+          </Route>
 
-        <Route path="/users/:userID" >
-          <ProfileHandler />
-        </Route>
+          <Route path="/users/:userID" >
+            <ProfileHandler />
+          </Route>
 
-        <Route path="/create">
-          <CreateHandler />
-        </Route>
+          <Route path="/create">
+            <CreateHandler />
+          </Route>
 
 
-        <Route path="/users">
-          <VisibleUsers />
-        </Route>
+          <Route path="/users">
+            <VisibleUsers />
+          </Route>
 
-        <Route>
-          <NoMatch />
-        </Route>
+          <Route>
+            <NoMatch />
+          </Route>
 
-      </Switch>
+        </Switch>
+      </div>
     </Router>
   );
 }

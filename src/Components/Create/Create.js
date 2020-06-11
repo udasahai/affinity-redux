@@ -19,24 +19,20 @@ class Create extends React.Component {
                 email: "",
                 profilePicture: ""
             },
+            submitted : false, 
             interests: [],
             interestValue: "",
             pictures: [],
             hasPicture: false,
             loggedIn: false
         }
+
         this.handleKeyPress = this.handleKeyPress.bind(this);
         this.handleInterestChange = this.handleInterestChange.bind(this);
         this.removePill = this.removePill.bind(this);
-        this.handleFirstNameChange = this.handleFirstNameChange.bind(this);
-        this.handleLastNameChange = this.handleLastNameChange.bind(this);
-        this.handleEmailChange = this.handleEmailChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
         this.onDrop = this.onDrop.bind(this);
-        // this.handleSubmit = this.handleSubmit.bind(this)
-
-
-
-
     }
 
     removePill(event) {
@@ -55,7 +51,6 @@ class Create extends React.Component {
         this.setState({
             pictures: this.state.pictures.concat(picture),
         });
-        console.log("Hello World")
     }
 
     researchPills() {
@@ -67,26 +62,16 @@ class Create extends React.Component {
         )
     }
 
-    handleFirstNameChange(event) {
-        console.log("FirstName")
+
+    handleChange(event){
+        const {id} = event.target;
         this.setState({
             contact: {
                 ...this.state.contact,
-                firstName: event.target.value
+                [id] : event.target.value
             }
         })
-    }
 
-    handleLastNameChange(event) {
-        this.setState({
-            lastName: event.target.value
-        })
-    }
-
-    handleEmailChange(event) {
-        this.setState({
-            email: event.target.value
-        })
     }
 
     handleInterestChange(event) {
@@ -95,12 +80,36 @@ class Create extends React.Component {
 
     handleKeyPress(event) {
         if (event.key === 'Enter') {
-            this.setState({ interestValue: "" })
             var joined = this.state.interests.concat(this.state.interestValue)
+            this.setState({ interestValue: "" })
             this.setState({
                 interests: joined
             })
 
+        }
+    }
+
+    validateEmail(email) {
+        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
+    validateForm(){
+        return (this.state.contact.firstName.length > 0 &&
+            this.state.contact.lastName.length > 0 && 
+            this.validateEmail(this.state.contact.email))
+    }
+
+
+    onSubmit(){
+        this.setState({
+            submitted : true
+        })
+        if(this.validateForm()){
+            console.log("Pressed Submit")
+            console.log(this.state)
+        } else {
+            console.log("Invalid Form")
         }
     }
 
@@ -113,34 +122,10 @@ class Create extends React.Component {
 
 
     componentDidMount() {
-
-        console.log(this.props)
-        // var claimedBy = localStorage.getItem("SHIBEDUPERSONTARGETEDID")
-        // var that = this
-
-        // api.getTargetId(claimedBy).then( (data) => {
-        //     console.log(data.body.length)
-        //     if (data.body.length > 0) {
-        //         var userInfo = data.body[0]
-
-        //         this.setState({firstName: userInfo.firstName})
-        //         that.setState({lastName: userInfo.lastName})
-        //         that.setState({email: userInfo.email})
-        //         that.setState({interests: userInfo.researchInterests.split(",")})
-
-
-        //     }
-        // })
-
-        // console.log(this.props.contact)
-        console.log("Mounting")
-
-        // this.props.dispatch(clearUserUpdate())
-
         this.setState({
             contact: this.props.contact,
             loggedIn: false,
-            interests: this.props.contact.researchInterests.split(','),
+            interests : this.props.contact.researchInterests.split(',').filter(x => x)
         }, () => console.log(this.state));
 
 
@@ -149,7 +134,6 @@ class Create extends React.Component {
 
     render() {
 
-        console.log("Rendering")
 
         const firstName = this.state.contact.firstName;
         const lastName = this.state.contact.lastName;
@@ -170,29 +154,37 @@ class Create extends React.Component {
             />
 
 
-                <Form.Group controlId="formBasicEmail">
+                <Form.Group controlId="firstName">
                     <Form.Label>First Name</Form.Label>
-                    <Form.Control type="firstname" autoComplete="off" value={firstName} onChange={this.handleFirstNameChange} placeholder="Enter First name" />
+                    <Form.Control type="firstname" autoComplete="off" value={firstName} required
+                                    onChange={this.handleChange} placeholder="Enter First name" />
+                    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     <Form.Text className="text-muted">
-                    Include middle name here
+                        *First name is required.
                     </Form.Text>
                 </Form.Group>
 
-                <Form.Group controlId="formBasicPassword">
+                <Form.Group controlId="lastName">
                     <Form.Label>Last name</Form.Label>
-                    <Form.Control type="lastname" autoComplete="off" value={lastName} onChange={this.handleLastNameChange} placeholder="Enter Last name" />
+                    <Form.Control type="lastname" autoComplete="off" value={lastName} onChange={this.handleChange} placeholder="Enter Last name" />
+                    <Form.Text className="text-muted">
+                        *Last name is required.
+                    </Form.Text>
                 </Form.Group>
 
-                <Form.Group controlId="formBasicEmail">
+                <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" autoComplete="off" value={email} onChange={this.handleEmailChange} placeholder="Enter email address" />
+                    <Form.Control type="email" autoComplete="off" value={email} onChange={this.handleChange} placeholder="Enter email address" />
+                    <Form.Text className="text-muted">
+                        *Email is required.
+                    </Form.Text>
                 </Form.Group>
 
                 <div>
                {this.researchPills()}
                 </div>
 
-                <Form.Group controlId="formBasicResearch">
+                <Form.Group controlId="researchInterests">
                     <Form.Label>Research Interests</Form.Label>
                     <Form.Control type="interests" autoComplete="off" value={interestValue} onKeyPress={this.handleKeyPress}  onChange={this.handleInterestChange} placeholder="Enter research interests" />
                     <Form.Text className="text-muted">
@@ -200,7 +192,9 @@ class Create extends React.Component {
                     </Form.Text>
                 </Form.Group>
 
-                <Button variant="primary" type="button">
+                {!this.validateForm() && this.state.submitted ? <p className="error">Please fill out name and email before submitting</p> : null} 
+
+                <Button variant="primary" type="button" onClick={this.onSubmit}>
                     Submit
                 </Button>
                 </Form>

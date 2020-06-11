@@ -1,32 +1,29 @@
 import React from "react";
-import { Navbar, Nav, Form, Button, FormControl } from "react-bootstrap";
+import { Navbar, Nav, Form, Button, FormControl, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { NavLink } from 'react-router-dom'
+import './Header.css'
 
-// class Header extends React.Component {
-
-//     render = () => {
-//         const { username, loggedIn } = this.props
-//         //console.log(username)
-//         let greeting = "Welcome, User"
-//         if (loggedIn) {
-//             greeting = `Welcome, ${username}`
-//         }
-//         return (
-//             <h1> {greeting} </h1>
-
-//         )
-//     }
-// }
 
 const redirectButton = (name, route, state) => (
-	<LinkContainer
-    to={{
-      pathname: route,
-      state: state,
-    }}
-  >
-    <Nav.Link>{name}</Nav.Link>
-  </LinkContainer>
+	// <LinkContainer
+  //   to={{
+  //     pathname: route,
+  //     state: state,
+  //   }}
+  // >
+  //   <Nav.Link>{name}</Nav.Link>
+  // </LinkContainer>
+  <NavItem>
+    <NavLink 
+    className="navLink"
+    activeClassName="selected"
+    exact to={{
+        pathname: route,
+        state: state,
+      }}
+   userInfo={state}> {name} </NavLink>
+  </NavItem>
 );
 
 const buttonBar = (loggedIn, contact) => (
@@ -36,13 +33,13 @@ const buttonBar = (loggedIn, contact) => (
       ? redirectButton("My Profile", "/users/" + contact.userID, contact)
       : redirectButton("Create Profile", "/create", {})}
   </Nav>
+  
 );
 
 const Header = (props) => {
-	const { contact, loggedIn } = props;
+	const { contact, loggedIn, givenName } = props;
 	const username = props.contact.firstName;
-
-	let greeting = "Hello User, Plesae Sign In";
+	let greeting = `Hello ${givenName}, Plesae Create or Claim a profile.`;
 
 	if (loggedIn) {
 		greeting = "Welcome, " + username;

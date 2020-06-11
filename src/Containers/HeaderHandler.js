@@ -6,7 +6,8 @@ import Header from '../Components/Header/Header'
 
 const mapStateToProps = state => ({
   loggedIn: state.login.loggedIn,
-  contact: state.login.user
+  contact: state.login.user,
+  givenName: state.login.givenName
 })
 
 // const mapDispatchToProps = dispatch => ({

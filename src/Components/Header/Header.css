@@ -1,0 +1,8 @@
+.navLink {
+    color : lightgray; 
+    margin-left: 1em;
+}
+
+.selected {
+    color : white;
+}

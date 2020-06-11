@@ -42,14 +42,14 @@ class Tile extends React.Component {
 		else
 			return (
 
-				<Card onClick={()=> this.setState({ clicked: true })}>
-	  <Card.Body>
-	    <Card.Title>{fullName}</Card.Title>
-	    <Card.Text>
-	      {(this.makeUpperCaseAfterCommas(this.props.contact.researchInterests))}
-	    </Card.Text>
-	  </Card.Body>
-	</Card>
+				<Card onClick={() => this.setState({ clicked: true })}>
+					<Card.Body>
+						<Card.Title>{fullName}</Card.Title>
+						<Card.Text>
+							{(this.makeUpperCaseAfterCommas(this.props.contact.researchInterests))}
+						</Card.Text>
+					</Card.Body>
+				</Card>
 			)
 	}
 }

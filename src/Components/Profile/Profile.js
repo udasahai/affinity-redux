@@ -1,12 +1,9 @@
 import React from "react"
-import { Container, Row, Col, Image, ButtonToolbar, Button, ListGroup, Accordion, Card, Modal } from 'react-bootstrap'
-import { Route, Redirect } from 'react-router'
+import { Container, Row, Col, Image, ButtonToolbar, Button} from 'react-bootstrap'
 import { withRouter } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap'
 import { fetchPublications } from '../../Actions/publicationsActions'
-import SimpleTabs from '../Tabs/Tabs'
-import ShowModal from '../ShowModal/ShowModal'
-import publicationParse from '../../decode'
+import MyPublications from '../Publications/Publications';
 import "./Profile.css"
 
 
@@ -21,7 +18,8 @@ class Profile extends React.Component {
                 firstName: "",
                 lastName: "",
                 email: "",
-                profilePicture: ""
+                profilePicture: "",
+                claimed: true
             }
         }
 
@@ -53,57 +51,32 @@ class Profile extends React.Component {
         this.props.dispatch(fetchPublications(userID));
         // this.props.dispatch(clearUserUpdate())
         this.setState({ "userInfo": userInfo });
+        console.log(userInfo)
     }
 
 
 
     render() {
 
-        // //console.log(this.state.userInfo)
-
-        const fullName = this.state.userInfo.firstName + " " + this.state.userInfo.lastName;
-        const interests = this.state.userInfo.researchInterests.split(",");
-        const email = this.state.userInfo.email;
-        const profilePicture = this.state.userInfo.profilePicture;
-        const userID = this.props.match.params.userID; //userID of user of this page
-        const loggedIn = this.props.loggedIn;
-        const user = this.props.user;
+        const userProps = {
+             fullName : this.state.userInfo.firstName + " " + this.state.userInfo.lastName,
+             interests : this.state.userInfo.researchInterests.split(","),
+             email : this.state.userInfo.email,
+             claimed : this.state.userInfo.claimed,
+             profilePicture : this.state.userInfo.profilePicture,
+             userID : this.props.match.params.userID, //userID of user of this page
+             loggedIn : this.props.loggedIn,
+             loggedInUser : this.props.loggedInUser,
+             addDefaultSrc : this.addDefaultSrc
+        }
 
         //console.log(loggedIn)
-        //console.log(user)
 
         return (
 
             <div>
-                <Container className="tabs">
-                    <Row>
-                        <SimpleTabs />
-                    </Row>
-                </Container>
-                <Container id={"bg-1"} fluid="true">
-                    <Row id="buttonBar">
-                        <ButtonToolbar id="buttons" size="sm"> {ButtonBar(loggedIn, userID, user)} </ButtonToolbar>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <Image onError={this.addDefaultSrc} src={profilePicture} id="imgContainer" thumbnail="true" />
-                            <h1> {fullName} </h1>
-                            <h5> {email} </h5>
-                        </Col>
-                        <Col>
-                                <Container id="jumbo" fluid="true">
-                                    <h1 style={{ textAlign: "center" }}>Research Interests</h1>
-                                    <ul>
-                                        {interests.map((item, i) => <li key={i}> {item} </li>)}
-                                    </ul>
-                                </Container>
-                        </Col>
-                    </Row>
-                </Container>
-                <Container id={"bg-2"} fluid="true">
-                    <h1> Recent Publications </h1>
-                    {Publications(this.props.publications)}
-                </Container>
+                <MyProfile userProps={userProps}/>
+                <MyPublications publications={this.props.publications}/>
             </div>
 
         )
@@ -111,18 +84,54 @@ class Profile extends React.Component {
 
 }
 
-const ButtonBar = (loggedIn, userID, user) => {
+function MyProfile(props){
+        const fullName = props.userProps.fullName;
+        const interests = props.userProps.interests;
+        const email = props.userProps.email;
+        const profilePicture = props.userProps.profilePicture;
+        const claimed = props.userProps.claimed;
+        const userID = props.userProps.userID; //userID of user of this page
+        const loggedIn = props.userProps.loggedIn;
+        const loggedInUser = props.userProps.loggedInUser;
+        const addDefaultSrc = props.userProps.addDefaultSrc;
+
+
+    return (
+    <Container id={"bg-1"} fluid="true">
+        <Row id="buttonBar">
+            <ButtonToolbar id="buttons" size="sm"> {ButtonBar(loggedIn, userID, loggedInUser, claimed)} </ButtonToolbar>
+        </Row>
+        <Row>
+            <Col>
+                <Image onError={addDefaultSrc} src={profilePicture} id="imgContainer" thumbnail="true" />
+                <h1> {fullName} </h1>
+                <h5> {email} </h5>
+            </Col>
+            <Col>
+                <Container id="jumbo" fluid="true">
+                    <h1 style={{ textAlign: "center" }}>Research Interests</h1>
+                    <ul>
+                        {interests.map((item, i) => <li key={i}> {item} </li>)}
+                    </ul>
+                </Container>
+            </Col>
+        </Row>
+    </Container>);
+}
+
+const ButtonBar = (loggedIn, userID, loggedInUser, claimed) => {
     //console.log(loggedIn)
+    console.log(claimed);
+
     if (!loggedIn)
         return (
-            <Button variant="primary" >
+            <Button disabled={claimed} variant="primary" >
                 Claim
             </Button>
         )
 
-    //console.log(userID)
-    //console.log(user.userID)
-    if (userID == user.userID) //cmp userID of loggedin user with current profile
+
+    if (parseInt(userID) === parseInt(loggedInUser.userID)) //cmp userID of loggedin user with current profile
         return (
             <LinkContainer to='/create'>
                 <Button variant="primary">
@@ -135,39 +144,6 @@ const ButtonBar = (loggedIn, userID, user) => {
 }
 
 
-const Publication = (publication, i) => {
-    const pub = publicationParse(publication);
-    // console.log(pub)
-    return (
-        <Card key={i} bg="white" text='black' border="dark">
-            <Card.Header>
-                <Accordion.Toggle as={Card.Header} eventKey={i}>
-
-                    <b> {publication.paperDisplay} <span id='arrow'>▼</span> </b>
-                </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey={i}>
-                <Card.Body>
-                    <ListGroup variant="flush">
-                        <ListGroup.Item className='capitalize'><b> Authors: </b> {pub.authors}</ListGroup.Item>
-                        <ListGroup.Item className='capitalize'><b> Fields: </b> {pub.fields}</ListGroup.Item>
-                        <ListGroup.Item className='capitalize'> <ShowModal source={pub['source']} /> </ListGroup.Item>
-                    </ListGroup>
-                </Card.Body>
-            </Accordion.Collapse>
-        </Card>
-    )
-}
-
-
-const Publications = (publications) => {
-
-    return (
-        <Accordion>
-            {publications.map((publication, i) => Publication(publication, i))}
-        </Accordion>
-    )
-}
 
 
 export default withRouter(Profile)

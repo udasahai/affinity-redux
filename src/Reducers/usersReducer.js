@@ -17,7 +17,8 @@ import {
   UPDATE_USER_BEGIN,
   UPDATE_USER_SUCCESS,
   UPDATE_USER_FAILURE,
-  CLEAR_USER_UPDATE
+  CLEAR_USER_UPDATE,
+  SET_LOGIN_NAME
 }
 from '../Actions/userActions';
 
@@ -209,7 +210,7 @@ export function departmentReducer(state = initialState_department, action) {
 }
 
 
-const initialState_login = {
+export const initialState_login = {
   user: {
     "userID": 0,
     "email": "",
@@ -217,21 +218,25 @@ const initialState_login = {
     "lastName": "",
     "researchInterests": "",
     "profilePicture": "",
-    "ShibbolethLogin": ""
+    "ShibbolethLogin": "",
+    "claimed" : false
   },
   loggedIn: false,
   redirect: false,
-  attempted: false
+  attempted: false,
+  givenName: "Anon"
 }
 
 
 export function loginReducer(state = initialState_login, action) {
   // console.log(action)
+  // console.log(state)
   switch (action.type) {
     case FETCH_TARGETID_BEGIN:
       return state
     case FETCH_TARGETID_SUCCESS:
       return {
+        ...state,
         user: action.payload.user,
         loggedIn: action.payload.loggedIn,
         redirect: action.payload.redirect,
@@ -242,6 +247,11 @@ export function loginReducer(state = initialState_login, action) {
         ...state,
         redirect: true,
         attempted: true
+      }
+    case SET_LOGIN_NAME:
+      return {
+        ...state,
+        givenName: action.payload.givenName
       }
 
     default:
